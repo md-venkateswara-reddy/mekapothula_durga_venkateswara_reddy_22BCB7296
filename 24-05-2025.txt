@@ -1,0 +1,104 @@
+//MySQL file (sql script)
+
+show databases;
+use vit;
+show tables from vit;
+create table student(
+    roll_no varchar(20),
+    student_name varchar(25),
+    marks int
+);
+insert into student values('22BCB7296', 'durga', 100), ('22BCB7305', 'Tharun', 100);
+select * from student;
+
+
+
+//DBConnection.java
+
+package connection;
+
+import java.sql.*;
+
+public class DBConnection {
+
+    public static void main(String[] args) {
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            
+            Connection con = DriverManager.getConnection(
+                "jdbc:mysql://localhost:3306/vit", "root", "mdvr");
+            
+            Statement stmt = con.createStatement();
+            
+            ResultSet rs = stmt.executeQuery("select * from student");
+            
+            while(rs.next())
+                System.out.println(rs.getString("roll_no") + " " + rs.getString("student_name") + " " + rs.getInt("marks"));
+            
+            con.close();
+        } catch(Exception e){
+            System.out.println("Sorry! check credentials again");
+        }
+    }
+}
+
+//DB_Connection.java
+
+package crud_operation;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+
+public class DB_Connection {
+
+    public static void main(String[] args) {
+        DB_Connection dbConnection = new DB_Connection();
+        System.out.println(dbConnection.get_connection());
+    }
+
+    public Connection get_connection() {
+        Connection connection = null;
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            connection = DriverManager.getConnection(
+                "jdbc:mysql://localhost:3306/vit", "root", "mdvr");
+        } catch(Exception e) {
+            System.out.println(e);
+        }
+        return connection;
+    }
+}
+
+
+//CRUD_Operation.java
+
+package crud_operation;
+
+import java.sql.PreparedStatement;
+
+public class CRUD_Operation {
+
+    public static void main(String[] args) {
+        CRUD_Operation objTest = new CRUD_Operation();
+        objTest.create_data("22BCB7296", "durga", 100);
+        objTest.create_data("22BCB7305", "tharun", 100);
+    }
+
+    public void create_data(String roll_no, String student_name, int marks) {
+        DB_Connection dbConnection = new DB_Connection();
+        java.sql.Connection connection = dbConnection.get_connection();
+        PreparedStatement ps = null;
+        try {
+            String query = "insert into student values (?, ?, ?)";
+            ps = connection.prepareStatement(query);
+            ps.setString(1, roll_no);
+            ps.setString(2, student_name);
+            ps.setInt(3, marks);
+            System.out.println(ps);
+            ps.executeUpdate();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
+}
+
