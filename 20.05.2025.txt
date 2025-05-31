@@ -1,0 +1,40 @@
+create database tuesday;
+
+use tuesday;
+
+drop table items;
+
+create table items (
+    item_id int,
+    item_name varchar(25),
+    item_description varchar(25)
+);
+
+create table categories (
+    category_id int primary key,
+    category_name varchar(25),
+    category_description varchar(50)
+);
+
+insert into categories values (201, 'electronics', 'smartphones and gadgets');
+insert into categories values (202, 'furniture', 'sofas, chairs, tables');
+
+select * from categories;
+
+drop table items;
+
+create table items (
+    item_id int primary key,
+    item_name varchar(25),
+    item_description varchar(35),
+    cat_id int,
+    foreign key (cat_id) references categories(category_id) on update cascade
+);
+
+delete from categories where category_id = 201;
+
+desc items;
+
+insert into items values (601, 'realme 12', '6gb ram, 128gb storage', 201);
+
+select * from items;
